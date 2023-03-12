@@ -1,10 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-	output: {
-		publicPath: "/",
-	},
-
 	resolve: {
 		extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
 	},
