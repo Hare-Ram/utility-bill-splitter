@@ -1,4 +1,4 @@
-import ModuleFederationPlugin from 'webpack/lib/container/ModuleFederationPlugin';
+const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common');
 
