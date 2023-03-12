@@ -7,10 +7,6 @@ const deps = require("../package.json").dependencies;
 const devConfig = {
     mode: "development",
 
-    output: {
-        publicPath: "http://localhost:8080/",
-    },
-
     devServer: {
         port: 8080,
         historyApiFallback: true,

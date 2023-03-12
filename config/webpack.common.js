@@ -1,36 +1,40 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
-  },
+	output: {
+		publicPath: "/",
+	},
 
-  module: {
-    rules: [
-      {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
-      },
-      {
-        test: /\.(css|s[ac]ss)$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"],
-      },
-      {
-        test: /\.(ts|tsx|js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-    ],
-  },
+	resolve: {
+		extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
+	},
 
-  plugins: [
-    new HtmlWebPackPlugin({
-      template: "./public/index.html",
-    }),
-  ],
+	module: {
+		rules: [
+			{
+				test: /\.m?js/,
+				type: "javascript/auto",
+				resolve: {
+					fullySpecified: false,
+				},
+			},
+			{
+				test: /\.(css|s[ac]ss)$/i,
+				use: ["style-loader", "css-loader", "postcss-loader"],
+			},
+			{
+				test: /\.(ts|tsx|js|jsx)$/,
+				exclude: /node_modules/,
+				use: {
+					loader: "babel-loader",
+				},
+			},
+		],
+	},
+
+	plugins: [
+		new HtmlWebPackPlugin({
+			template: "./public/index.html",
+		}),
+	],
 };

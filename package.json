@@ -2,9 +2,7 @@
   "name": "utility-bill-splitter",
   "version": "1.0.0",
   "scripts": {
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
-    "build:start": "cd dist && PORT=8080 npx serve",
+    "build": "webpack --config config/webpack.prod.js",
     "start": "webpack serve --config config/webpack.dev.js",
     "start:live": "webpack serve --open --mode development --live-reload --hot"
   },

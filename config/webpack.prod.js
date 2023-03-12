@@ -7,16 +7,12 @@ const deps = require("../package.json").dependencies;
 const prodConfig = {
     mode: "production",
 
-    output: {
-        publicPath: "http://localhost:8080/",
-    },
-
     plugins: [
         new ModuleFederationPlugin({
             name: "utility_bill_splitter",
             filename: "remoteEntry.js",
             exposes: {
-                './App': './src/app'
+                './App': './src/App'
             },
             shared: {
                 ...deps,
