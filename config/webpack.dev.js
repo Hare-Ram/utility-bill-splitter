@@ -9,7 +9,9 @@ const devConfig = {
 
     devServer: {
         port: 8080,
-        historyApiFallback: true,
+        historyApiFallback: {
+            index: 'index.html',
+        },
     },
 
     devtool: "cheap-module-source-map",

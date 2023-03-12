@@ -7,6 +7,11 @@ const deps = require("../package.json").dependencies;
 const prodConfig = {
     mode: "production",
 
+    output: {
+        filename: '[name].[contenthash].js',
+        publicPath: 'https://utility-bill-splitter.web.app/',
+    },
+
     plugins: [
         new ModuleFederationPlugin({
             name: "utility_bill_splitter",
