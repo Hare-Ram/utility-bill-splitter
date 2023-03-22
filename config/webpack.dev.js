@@ -13,12 +13,8 @@ const devConfig = {
 
     devServer: {
         port: 8080,
-        historyApiFallback: {
-            index: 'index.html',
-        },
+        historyApiFallback: true,
     },
-
-    devtool: "cheap-module-source-map",
 
     plugins: [
         new ModuleFederationPlugin({
@@ -30,12 +26,12 @@ const devConfig = {
             shared: {
                 ...deps,
                 react: {
-                singleton: true,
-                requiredVersion: deps.react,
+                    singleton: true,
+                    requiredVersion: deps.react,
                 },
                 "react-dom": {
-                singleton: true,
-                requiredVersion: deps["react-dom"],
+                    singleton: true,
+                    requiredVersion: deps["react-dom"],
                 },
             },
         })
