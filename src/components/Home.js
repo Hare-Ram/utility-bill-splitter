@@ -35,6 +35,7 @@ const calculateTariff = (totalUnits, units) => {
     let temp = totalUnits;
     let remainingUnits = units;
     let totalTariff = 0;
+    let tariffBreakDown = {};
 
     tariffs.forEach((slab) => {
         if (temp > 0 && remainingUnits > 0) {
@@ -43,14 +44,17 @@ const calculateTariff = (totalUnits, units) => {
                 if (!slab.end) {
                     unitsConsumedInSlab = Math.min((temp - slab.start), remainingUnits);
                 } else {
-                    unitsConsumedInSlab = Math.min((slab.end - slab.start), remainingUnits);
+                    unitsConsumedInSlab = Math.min((slab.end - slab.start), (temp - slab.start), remainingUnits);
                 }
                 remainingUnits -= unitsConsumedInSlab;
-                totalTariff += slab.perUnitTariff * unitsConsumedInSlab;
-                temp = slab.start;
+                const tariffForSlab = slab.perUnitTariff * unitsConsumedInSlab;
+                totalTariff += tariffForSlab;
+                tariffBreakDown[`${slab.start}${slab.end ? '-' + slab.end : '+'}`] = `${unitsConsumedInSlab}units * ₹${slab.perUnitTariff} = ${tariffForSlab}`;
+                temp -= unitsConsumedInSlab;
             }
         }
     })
+    console.log(tariffBreakDown);
 
     return totalTariff;
 }
@@ -67,12 +71,18 @@ const Home = () => {
 
         const fieldTariffs = {};
 
+        let totalTariffForAppliances = 0;
         Object.keys(fieldValues).forEach(fieldName => {
-            fieldTariffs[fieldName] = parseInt(fieldValues[fieldName]) * (totalTariff / totalUnitsForAppliances);
+            const tariffForUser = parseInt(fieldValues[fieldName]) * (totalTariff / totalUnitsForAppliances);
+            fieldTariffs[fieldName] = Math.round((tariffForUser + Number.EPSILON) * 100) / 100;
+            totalTariffForAppliances += fieldTariffs[fieldName];
         })
 
+        const commonTariff = totalCharges - totalTariffForAppliances;
+        const commonChargesForEachUser = commonTariff / 4;
+
         // ToDo: Show in a better way.
-        alert(JSON.stringify(fieldTariffs));
+        alert(JSON.stringify({ ...fieldTariffs, totalUnitsForAppliances, totalTariffForAppliances, commonTariff, commonChargesForEachUser }));
     }
 
     const handleFieldChange = (e, fieldName) => {
@@ -85,6 +95,11 @@ const Home = () => {
     const [
         totalUnits,
         setTotalUnits,
+    ] = useState(0);
+
+    const [
+        totalCharges,
+        setTotalCharges,
     ] = useState(0);
 
     const [fields, setFields] = useState(['First', 'Second', 'Third']);
@@ -126,6 +141,13 @@ const Home = () => {
                     fullWidth
                     type="number"
                     onChange={(e) => setTotalUnits(parseInt(e.target.value))}
+                    sx={{ my: 1 }} />
+                <TextField
+                    label="Total charges"
+                    variant='outlined'
+                    fullWidth
+                    type="number"
+                    onChange={(e) => setTotalCharges(parseInt(e.target.value))}
                     sx={{ my: 1 }} />
                 <div id="users" >
                     {
