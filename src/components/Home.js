@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
+import Table from './table/Table';
 
 const tariffs = [
     {
@@ -59,7 +60,19 @@ const calculateTariff = (totalUnits, units) => {
     return totalTariff;
 }
 
+const rowHeadings = [
+    'Name',
+    'Appliance',
+    'Common',
+    'Total'
+]
+
 const Home = () => {
+    const [
+        rows,
+        setRows,
+    ] = useState(null);
+
     const handleClickCalculate = (e) => {
         e.preventDefault();
         let totalUnitsForAppliances = 0;
@@ -79,10 +92,21 @@ const Home = () => {
         })
 
         const commonTariff = totalCharges - totalTariffForAppliances;
-        const commonChargesForEachUser = commonTariff / 4;
+        let commonChargesForEachUser = commonTariff / 4;
+        commonChargesForEachUser = Math.round((commonChargesForEachUser + Number.EPSILON) * 100) / 100;
 
-        // ToDo: Show in a better way.
-        alert(JSON.stringify({ ...fieldTariffs, totalUnitsForAppliances, totalTariffForAppliances, commonTariff, commonChargesForEachUser }));
+        const tariffDetails = [];
+
+        Object.keys(fieldValues).forEach(fieldName => {
+            tariffDetails.push({
+                name: fieldName,
+                applianceCharges: fieldTariffs[fieldName],
+                commonCharges: commonChargesForEachUser,
+                totalCharges: commonChargesForEachUser + fieldTariffs[fieldName],
+            })
+        })
+
+        setRows(tariffDetails);
     }
 
     const handleFieldChange = (e, fieldName) => {
@@ -139,6 +163,7 @@ const Home = () => {
                     label="Total units"
                     variant='outlined'
                     fullWidth
+                    autoFocus
                     type="number"
                     onChange={(e) => setTotalUnits(parseInt(e.target.value))}
                     sx={{ my: 1 }} />
@@ -170,6 +195,28 @@ const Home = () => {
                     variant='contained'>
                     Calculate
                 </Button>
+                {
+                    rows &&
+                    <>
+                        <Typography variant='h5' color='#6e6e6e'>
+                            User wise tariff break-down
+                        </Typography>
+                        <Table
+                            rows={rows}
+                            rowHeadings={rowHeadings} />
+                    </>
+                }
+                {
+                    rows &&
+                    <Button
+                        onClick={() => {
+                            setRows(null)
+                        }}
+                        color='error'
+                        variant='outlined'>
+                        Clear
+                    </Button>
+                }
             </Box>
         </>
     )
