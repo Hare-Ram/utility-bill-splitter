@@ -36,7 +36,7 @@ const calculateTariff = (totalUnits, units) => {
     let temp = totalUnits;
     let remainingUnits = units;
     let totalTariff = 0;
-    let tariffBreakDown = {};
+    const tariffBreakDown = [];
 
     tariffs.forEach((slab) => {
         if (temp > 0 && remainingUnits > 0) {
@@ -50,14 +50,25 @@ const calculateTariff = (totalUnits, units) => {
                 remainingUnits -= unitsConsumedInSlab;
                 const tariffForSlab = slab.perUnitTariff * unitsConsumedInSlab;
                 totalTariff += tariffForSlab;
-                tariffBreakDown[`${slab.start}${slab.end ? '-' + slab.end : '+'}`] = `${unitsConsumedInSlab}units * ₹${slab.perUnitTariff} = ${tariffForSlab}`;
+                tariffBreakDown.push({
+                    slab: `${slab.start}${slab.end ? '-' + slab.end : '+'}`,
+                    units: unitsConsumedInSlab,
+                    rate: slab.perUnitTariff,
+                    tariff: tariffForSlab
+                })
                 temp -= unitsConsumedInSlab;
             }
         }
     })
-    console.log(tariffBreakDown);
+    tariffBreakDown.push({
+        slab: 'Total',
+        units,
+        rate: '-',
+        total: totalTariff,
+    })
+    console.table(tariffBreakDown);
 
-    return totalTariff;
+    return { totalTariff, tariffBreakDown };
 }
 
 const rowHeadings = [
@@ -67,10 +78,22 @@ const rowHeadings = [
     'Total'
 ]
 
+const tariffHeadings = [
+    'Slab',
+    'Units',
+    'Rate',
+    'Tariff'
+]
+
 const Home = () => {
     const [
         rows,
         setRows,
+    ] = useState(null);
+
+    const [
+        tariffRows,
+        setTariffRows,
     ] = useState(null);
 
     const handleClickCalculate = (e) => {
@@ -80,7 +103,9 @@ const Home = () => {
             totalUnitsForAppliances += parseInt(fieldValues[fieldName]);
         })
 
-        const totalTariff = calculateTariff(totalUnits, totalUnitsForAppliances);
+        const { totalTariff, tariffBreakDown } = calculateTariff(totalUnits, totalUnitsForAppliances);
+
+        setTariffRows(tariffBreakDown);
 
         const fieldTariffs = {};
 
@@ -195,6 +220,19 @@ const Home = () => {
                     variant='contained'>
                     Calculate
                 </Button>
+                <br />
+                {
+                    tariffRows &&
+                    <>
+                        <Typography variant='h5' color='#6e6e6e'>
+                            Slab wise tariff break-down.
+                        </Typography>
+                        <Table
+                            rows={tariffRows}
+                            rowHeadings={tariffHeadings} />
+                    </>
+                }
+                <br />
                 {
                     rows &&
                     <>
@@ -211,6 +249,7 @@ const Home = () => {
                     <Button
                         onClick={() => {
                             setRows(null)
+                            setTariffRows(null)
                         }}
                         color='error'
                         variant='outlined'>
