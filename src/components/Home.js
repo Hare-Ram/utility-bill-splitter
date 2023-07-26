@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
+// import { Link } from 'react-router-dom';
 import Table from './table/Table';
 
 const tariffs = [
@@ -64,7 +66,7 @@ const calculateTariff = (totalUnits, units) => {
         slab: 'Total',
         units,
         rate: '-',
-        total: totalTariff,
+        tariff: totalTariff,
     })
     console.table(tariffBreakDown);
 
@@ -181,9 +183,15 @@ const Home = () => {
                     borderRadius: '10px'
                 }}
                 autoComplete='off'>
-                <Typography variant='h4' color='#6e6e6e'>
-                    Utility Bill Splitter (WIP)
-                </Typography>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Typography variant='h4' color='#6e6e6e'>
+                        Utility Bill Splitter
+                    </Typography>
+                    <SettingsIcon />
+                    {/* <Link to="/settings">
+                    <SettingsIcon />
+                    </Link> */}
+                </div>
                 <TextField
                     label="Total units"
                     variant='outlined'
@@ -199,7 +207,14 @@ const Home = () => {
                     type="number"
                     onChange={(e) => setTotalCharges(parseInt(e.target.value))}
                     sx={{ my: 1 }} />
-                <div id="users" >
+                <div
+                    id="users"
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        columnGap: '16px',
+                        justifyContent: 'space-between',
+                    }} >
                     {
                         fields.map((field) => {
                             return (
@@ -209,7 +224,7 @@ const Home = () => {
                                     variant='outlined'
                                     type="number"
                                     onChange={(e) => handleFieldChange(e, field)}
-                                    sx={{ my: 1 }} />
+                                    sx={{ my: 1, flexGrow: 1 }} />
                             );
                         })
                     }
