@@ -199,7 +199,9 @@ const Home = () => {
                     sx={{
                         bgcolor: '#fff',
                         padding: '0.5em',
-                        borderRadius: '10px'
+                        borderRadius: '10px',
+                        display: 'flex',
+                        flexDirection: 'column'
                     }}
                     autoComplete='off'>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -210,7 +212,7 @@ const Home = () => {
                             <CloseIcon />
                         </IconButton>
                     </div>
-                    <Typography variant='h6' color='#6e6e6e'>
+                    <Typography variant='h6' style={{ color: '#6e6e6e', width: 'fit-content' }}>
                         Modify Usernames.
                     </Typography>
                     <div
@@ -238,6 +240,7 @@ const Home = () => {
                     <Button
                         type="submit"
                         onClick={handleClickSaveUsers}
+                        style={{ width: 'fit-content' }}
                         variant='contained'>
                         Save
                     </Button>
