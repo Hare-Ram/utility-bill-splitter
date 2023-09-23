@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import { Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -143,6 +145,12 @@ const Home = () => {
         })
     }
 
+    const tempFieldNames = useRef([])
+
+    const handleFieldNameChange = (e, fieldIndex) => {
+        tempFieldNames.current[fieldIndex] = e.target.value;
+    }
+
     const [
         totalUnits,
         setTotalUnits,
@@ -160,6 +168,16 @@ const Home = () => {
         setFieldValues,
     ] = useState({});
 
+    const handleClickSaveUsers = (e) => {
+        e.preventDefault();
+        setFields([...tempFieldNames.current]);
+    }
+
+    const [
+        showSettings,
+        setShowSettings,
+    ] = useState(false);
+
     useEffect(() => {
         const initialvalues = { ...fieldValues };
         fields.forEach(field => {
@@ -171,6 +189,63 @@ const Home = () => {
             }
         })
     }, [fields]);
+
+    if (showSettings) {
+        return (
+            <>
+                <Box
+                    component="form"
+                    noValidate
+                    sx={{
+                        bgcolor: '#fff',
+                        padding: '0.5em',
+                        borderRadius: '10px'
+                    }}
+                    autoComplete='off'>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Typography variant='h4' color='#6e6e6e'>
+                            Settings
+                        </Typography>
+                        <IconButton onClick={() => setShowSettings(!showSettings)}>
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
+                    <Typography variant='h6' color='#6e6e6e'>
+                        Modify Usernames.
+                    </Typography>
+                    <div
+                        id="users"
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            columnGap: '16px',
+                            justifyContent: 'space-between',
+                        }} >
+                        {
+                            fields.map((field, index) => {
+                                return (
+                                    <TextField
+                                        key={field}
+                                        label={field}
+                                        variant='outlined'
+                                        type="text"
+                                        onChange={(e) => handleFieldNameChange(e, index)}
+                                        sx={{ my: 1, flexGrow: 1 }} />
+                                );
+                            })
+                        }
+                    </div>
+                    <Button
+                        type="submit"
+                        onClick={handleClickSaveUsers}
+                        variant='contained'>
+                        Save
+                    </Button>
+                    <br />
+                </Box>
+            </>
+        );
+    }
 
     return (
         <>
@@ -187,7 +262,9 @@ const Home = () => {
                     <Typography variant='h4' color='#6e6e6e'>
                         Utility Bill Splitter
                     </Typography>
-                    <SettingsIcon />
+                    <IconButton onClick={() => setShowSettings(!showSettings)}>
+                        <SettingsIcon />
+                    </IconButton>
                     {/* <Link to="/settings">
                     <SettingsIcon />
                     </Link> */}
